@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { ITarefa } from "../../types/ITarefa";
 import Button from "../Button";
-import { tempoParaSegundos } from "../common/utils/time";
+import { tempoParaSegundos } from "../../common/utils/time";
 import Clock from "./Clock";
 import style from "./Timer.module.scss"
 
 interface Props {
-    selecionado: ITarefa | undefined
+    selecionado: ITarefa | undefined,
+    finalizarTarefa: () => void
 }
 
-export default function Timer({ selecionado }: Props) {
+export default function Timer({ selecionado, finalizarTarefa }: Props) {
     const [tempo, setTempo] = useState<number>();
 
     useEffect(() => {
@@ -18,8 +19,17 @@ export default function Timer({ selecionado }: Props) {
         }
     }, [selecionado])
 
-    
-
+    function regressiva(contador: number = 0) {
+        setTimeout(() => {
+            if (contador > 0) {
+                setTempo(contador - 1);
+                return regressiva(contador - 1)
+            } 
+            
+            return finalizarTarefa();
+        }, 1000)
+    }
+  
 
     return (
         <section className={style.cronometro}>
@@ -27,7 +37,7 @@ export default function Timer({ selecionado }: Props) {
             <div className={style.relogioWrapper}>
             <Clock tempo={tempo} />
             </div>
-            <Button>
+            <Button onClick={() => regressiva(tempo)}>
                 Começar!
             </Button>
         </section>

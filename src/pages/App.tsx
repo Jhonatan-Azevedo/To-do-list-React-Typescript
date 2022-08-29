@@ -18,12 +18,25 @@ function App() {
       selecionado: tarefa.id === tarefaSelecionada.id ? true : false
     })));
   }
+
+  function finalizarTarefa() {
+    if (selecionado) {
+      setSelecionado(undefined);
+      setTarefas(tarefasAnteriores => tarefasAnteriores.map(tarefa => {
+        return {
+          ...tarefa,
+          selecionado: false,
+          completado: true
+        }
+      }))
+    }
+  }
   
   return (
     <section className={style.AppStyle}>
       <Form setTarefas={setTarefas} />
       <List tarefas={tarefas} selecionaTarefa={selecionaTarefa} />
-      <Timer selecionado={ selecionado } />
+      <Timer selecionado={ selecionado } finalizarTarefa={finalizarTarefa} />
     </section>
   );
 }
