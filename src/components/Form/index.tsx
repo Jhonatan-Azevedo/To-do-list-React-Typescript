@@ -1,16 +1,26 @@
 import React from "react";
+import { ITarefa } from "../../types/ITarefa";
 import Button from "../Button";
 import style from "./Form.module.scss"
+import { v4 as uuidv4 } from "uuid";
 
-class Form extends React.Component {
+class Form extends React.Component<{
+    setTarefas: React.Dispatch<React.SetStateAction<ITarefa[]>>
+}> {
+
     state = {
-        assignment: "",
-        timeAssingment: "00:00:00"
+        tarefa: "",
+        tempo: "00:00:00"
     }
 
     saveAssigment(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        console.log("state: ", this.state);
+        this.props.setTarefas((tarefasAntigas) => [...tarefasAntigas, { ...this.state, selecionado: false, completado: false, id: uuidv4() }])
+        
+        this.setState({
+            tarefa: "",
+            tempo: "00:00",
+        })
     }
 
     render() {
@@ -22,8 +32,11 @@ class Form extends React.Component {
                         type="text"
                         name="assignment"
                         id="assignment"
-                        value={this.state.assignment}
-                           onChange={(event) => this.setState({ ... this.state, assignment: event.target.value })}
+                        value={this.state.tarefa}
+                        onChange={(event) => this.setState({
+                            ...this.state,
+                            tarefa: event.target.value
+                        })}
                         placeholder="Estudar"
                         required />
                 </div>
@@ -33,12 +46,12 @@ class Form extends React.Component {
                         type="time"
                         name="timeAssingment"
                         id="timeAssingment"
-                        value={this.state.timeAssingment}
-                        onChange={(event) => this.setState({ ... this.state, timeAssingment: event.target.value })}
-                        placeholder="00:00:00"
+                        value={this.state.tempo}
+                        onChange={(event) => this.setState({ ...this.state, tempo: event.target.value })}
+                        placeholder="00:00"
                         required />
                 </div>
-                <Button>
+                <Button type="submit">
                     Adicionar
                 </Button>
             </form>
